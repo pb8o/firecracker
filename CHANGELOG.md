@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.2]
+
+### Fixed
+
+- Fixed test for v1.0.2
+
 ## [1.0.1]
 
 ### Fixed

@@ -48,7 +48,7 @@ Contributors to the Firecracker repository:
 * Begley Brothers Inc <begleybrothers@gmail.com>
 * Ben Holmes <bencwholmes@gmail.com>
 * Benjamin Fry <benjaminfry@me.com>
-* Liviu Berciu <lberciu@amazon.com>
+* berciuliviu <lberciu@amazon.com>
 * bin liu <bin@hyper.sh>
 * binoychitale <binoychitale@gmail.com>
 * Bob Potter <bobby.potter@gmail.com>
@@ -103,10 +103,12 @@ Contributors to the Firecracker repository:
 * Joshua Abraham <sinisterpatrician@gmail.com>
 * Julian Stecklina <js@alien8.de>
 * karthik nedunchezhiyan <karthik.n@zohocorp.com>
+* karthik.n <karthik.n@zohocorp.com>
 * KarthikVelayutham <karthik.velayutham@gmail.com>
 * Kazuyoshi Kato <katokazu@amazon.com>
 * keyangxie <keyang.xie@gmail.com>
 * Krishna Kumar T <krishna.thokala2010@gmail.com>
+* kumargu <kumargu@amazon.com>
 * Laura Loghin <lauralg@amazon.com>
 * lifupan <lifupan@gmail.com>
 * Liu Jiang <gerry@linux.alibaba.com>
@@ -137,6 +139,7 @@ Contributors to the Firecracker repository:
 * Nikolay Edigaryev <edigaryev@gmail.com>
 * Noah Meyerhans <nmeyerha@amazon.com>
 * not required <bertdeb@gmail.com>
+* Pablo Barbáchano <pablob@amazon.com>
 * Peng Tao <bergwolf@gmail.com>
 * Penny Zheng <penny.zheng@arm.com>
 * Peter Hrvola <peter.hrvola@hotmail.com>
@@ -183,6 +186,7 @@ Contributors to the Firecracker repository:
 * xiekeyang <keyang.xie@gmail.com>
 * Yichen Zhang <jakezhang2020@gmail.com>
 * YLyu <lyuyuan92@gmail.com>
+* YUAN LYU <lyuyuan92@gmail.com>
 * Yuval Kohavi <yuval.kohavi@gmail.com>
 * Yılmaz ŞEN <yilmazsen94@gmail.com>
 * Zi Shen Lim <zlim.lnx@gmail.com>
