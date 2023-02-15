@@ -189,6 +189,7 @@ Contributors to the Firecracker repository:
 * Sripracha <ramsri@amazon.com>
 * Stefan Nita <32079871+stefannita01@users.noreply.github.com>
 * StemCll <lydjotj6f@mozmail.com>
+* Sudan Landge <sudanl@amazon.co.uk>
 * sundar.preston.789@gmail.com <sundar.preston.789@gmail.com>
 * Takahiro Itazuri <itazur@amazon.com>
 * Tal Hoffman <talhof8@gmail.com>
@@ -204,6 +205,7 @@ Contributors to the Firecracker repository:
 * Tyler Anton <tyler@debian.anton>
 * Urvil Patel <patelurvil38@gmail.com>
 * Vibha Acharya <vibharya@amazon.co.uk>
+* Volker Simonis <volker.simonis@gmail.com>
 * Wei Yang <richard.weiyang@linux.alibaba.com>
 * Weixiao Huang <hwx.simle@gmail.com>
 * Wesley Norris <repnop@outlook.com>
