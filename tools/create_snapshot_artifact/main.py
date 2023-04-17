@@ -17,9 +17,9 @@ sys.path.append(os.path.join(os.getcwd(), "tests"))  # noqa: E402
 # The test infra assumes it is running from the `tests` directory.
 os.chdir("tests")
 from conftest import ARTIFACTS_COLLECTION as ARTIFACTS
-from conftest import _gcc_compile
 from framework.artifacts import create_net_devices_configuration
 from framework.builder import MicrovmBuilder, SnapshotBuilder, SnapshotType
+from host_tools.cargo_build import gcc_compile
 from framework.defs import DEFAULT_TEST_SESSION_ROOT_PATH
 from framework.microvm import Microvm
 from framework.utils import (
@@ -59,8 +59,7 @@ def compile_file(file_name, dest_path, bin_name):
 
     source_file_path = os.path.join(host_tools_path, file_name)
     bin_file_path = os.path.join(dest_path, bin_name)
-    _gcc_compile(source_file_path, bin_file_path)
-
+    gcc_compile(source_file_path, bin_file_path)
     return bin_file_path
 
 
