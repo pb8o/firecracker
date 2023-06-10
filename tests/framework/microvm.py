@@ -29,7 +29,6 @@ from typing import Optional
 from retry import retry
 
 import host_tools.cargo_build as build_tools
-import host_tools.memory as mem_tools
 import host_tools.network as net_tools
 from framework import utils
 from framework.artifacts import NetIfaceConfig
@@ -148,7 +147,6 @@ class Microvm:
         fc_binary_path=None,
         jailer_binary_path=None,
         microvm_id=None,
-        monitor_memory=True,
         bin_cloner_path=None,
     ):
         """Set up microVM attributes, paths, and data structures."""
@@ -193,11 +191,6 @@ class Microvm:
         # disable the HTTP API timings as they cause a lot of false positives
         if int(os.environ.get("PYTEST_XDIST_WORKER_COUNT", 1)) > 1:
             self.time_api_requests = False
-
-        # Initalize memory monitor
-        self.memory_monitor = None
-        if monitor_memory:
-            self.memory_monitor = mem_tools.MemoryMonitor()
 
         self.api = None
         self.log_file = None
@@ -252,12 +245,6 @@ class Microvm:
             # We need to explicitly kill the Firecracker pid, since it's
             # different from the jailer pid that was previously killed.
             utils.run_cmd(f"kill -9 {self.pid_in_new_ns}", ignore_return_code=True)
-
-        if self.memory_monitor:
-            if self.memory_monitor.is_alive():
-                self.memory_monitor.signal_stop()
-                self.memory_monitor.join(timeout=1)
-            self.memory_monitor.check_samples()
 
     def _validate_api_response_times(self):
         """
@@ -567,11 +554,6 @@ class Microvm:
             cpu_template=cpu_template,
         )
         self.vcpus_count = vcpu_count
-
-        if self.memory_monitor:
-            self.memory_monitor.guest_mem_mib = mem_size_mib
-            self.memory_monitor.pid = self.jailer_clone_pid
-            self.memory_monitor.start()
 
         boot_source_args = {
             "kernel_image_path": self.create_jailed_resource(self.kernel_file),

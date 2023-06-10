@@ -26,22 +26,21 @@ class MemoryMonitor(Thread):
     VMM memory usage.
     """
 
-    MEMORY_THRESHOLD = 5 * 1024
     MEMORY_SAMPLE_TIMEOUT_S = 0.05
     X86_MEMORY_GAP_START = 3407872
 
-    def __init__(self):
+    def __init__(self, vm, threshold=5 * 1024):
         """Initialize monitor attributes."""
         Thread.__init__(self)
-        self._pid = None
-        self._guest_mem_mib = None
+        self._pid = vm.jailer_clone_pid
+        self._guest_mem_mib = vm.mem_size_mib
         self._guest_mem_start_1 = None
         self._guest_mem_end_1 = None
         self._guest_mem_start_2 = None
         self._guest_mem_end_2 = None
         self._exceeded_queue = Queue()
         self._pmap_out = None
-        self._threshold = self.MEMORY_THRESHOLD
+        self._threshold = threshold
         self._should_stop = False
         self._current_rss = 0
         self._lock = Lock()
@@ -182,3 +181,21 @@ class MemoryMonitor(Thread):
         time.sleep(self.MEMORY_SAMPLE_TIMEOUT_S + 0.5)
         with self._lock:
             return self._current_rss
+
+    def __enter__(self):
+        """To use it as a Context Manager
+
+        >>> mm = MemoryMonitor(vm, threshold=10*1024)
+        >>> with mm:
+        >>>    # do stuff
+        """
+
+        self.start()
+
+    def __exit__(self, _type, _value, _traceback):
+        """Exit context"""
+
+        if self.is_alive():
+            self.signal_stop()
+            self.join(timeout=1)
+        self.check_samples()

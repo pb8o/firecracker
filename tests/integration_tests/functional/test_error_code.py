@@ -24,7 +24,6 @@ def test_enosys_error_code(uvm_plain):
     # ("ldr %0, [%1], 4" : "=r" (ret), "+r" (buf));
     vm = uvm_plain
     vm.spawn()
-    vm.memory_monitor = None
     vm.basic_config(
         vcpu_count=1,
         boot_args="reboot=k panic=1 pci=off init=/usr/local/bin/devmemread",

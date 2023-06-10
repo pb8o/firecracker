@@ -293,7 +293,7 @@ def test_cpu_rdmsr(
     """
 
     vcpus, guest_mem_mib = 1, 1024
-    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22, monitor_memory=False)
+    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22)
     vm.spawn()
     vm.add_net_iface()
     vm.basic_config(
@@ -386,7 +386,7 @@ def test_cpu_wrmsr_snapshot(
     shared_names = SNAPSHOT_RESTORE_SHARED_NAMES
 
     vcpus, guest_mem_mib = 1, 1024
-    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22, monitor_memory=False)
+    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22)
     vm.spawn()
     vm.add_net_iface()
     vm.basic_config(

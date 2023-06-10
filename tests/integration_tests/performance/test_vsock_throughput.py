@@ -150,7 +150,7 @@ def test_vsock_throughput(
         pytest.skip("bidrectional test only done with at least 2 vcpus")
 
     mem_size_mib = 1024
-    vm = microvm_factory.build(guest_kernel, rootfs, monitor_memory=False)
+    vm = microvm_factory.build(guest_kernel, rootfs)
     vm.spawn(log_level="Info")
     vm.basic_config(vcpu_count=vcpus, mem_size_mib=mem_size_mib)
     vm.add_net_iface()

@@ -20,7 +20,6 @@ def test_rtc(test_microvm_with_api):
     """
     vm = test_microvm_with_api
     vm.spawn()
-    vm.memory_monitor = None
     vm.basic_config()
     vm.add_net_iface()
     vm.start()

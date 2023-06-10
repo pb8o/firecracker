@@ -91,7 +91,7 @@ def get_snap_restore_latency(
     """Restore snapshots with various configs to measure latency."""
     scratch_drives = get_scratch_drives()
 
-    vm = microvm_factory.build(guest_kernel, rootfs, monitor_memory=False)
+    vm = microvm_factory.build(guest_kernel, rootfs)
     vm.spawn(log_level="Info")
     vm.basic_config(
         vcpu_count=vcpus,

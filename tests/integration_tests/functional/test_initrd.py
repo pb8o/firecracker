@@ -14,7 +14,6 @@ def test_microvm_initrd_with_serial(uvm_with_initrd):
     vm = uvm_with_initrd
     vm.jailer.daemonize = False
     vm.spawn()
-    vm.memory_monitor = None
 
     vm.basic_config(
         add_root_device=False,

@@ -103,7 +103,7 @@ def test_network_latency(microvm_factory, guest_kernel, rootfs, st_core):
     # Create a microvm from artifacts
     guest_mem_mib = 1024
     guest_vcpus = 1
-    vm = microvm_factory.build(guest_kernel, rootfs, monitor_memory=False)
+    vm = microvm_factory.build(guest_kernel, rootfs)
     vm.spawn(log_level="Info")
     vm.basic_config(vcpu_count=guest_vcpus, mem_size_mib=guest_mem_mib)
     iface = vm.add_net_iface()

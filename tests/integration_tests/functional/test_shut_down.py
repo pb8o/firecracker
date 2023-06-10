@@ -17,10 +17,6 @@ def test_reboot(test_microvm_with_api):
     vm.jailer.daemonize = False
     vm.spawn()
 
-    # We don't need to monitor the memory for this test because we are
-    # just rebooting and the process dies before pmap gets the RSS.
-    vm.memory_monitor = None
-
     # Set up the microVM with 4 vCPUs, 256 MiB of RAM, 0 network ifaces, and
     # a root file system with the rw permission. The network interfaces is
     # added after we get a unique MAC and IP.

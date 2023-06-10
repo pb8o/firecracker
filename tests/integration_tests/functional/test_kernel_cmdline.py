@@ -15,7 +15,6 @@ def test_init_params(test_microvm_with_api):
     vm = test_microvm_with_api
     vm.jailer.daemonize = False
     vm.spawn()
-    vm.memory_monitor = None
 
     # We will override the init with /bin/cat so that we try to read the
     # Ubuntu version from the /etc/issue file.

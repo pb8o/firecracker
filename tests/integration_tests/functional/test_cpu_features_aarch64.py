@@ -118,7 +118,7 @@ def test_default_cpu_features(microvm_factory, guest_kernel, rootfs_ubuntu_22):
     Check the CPU features for a microvm with the specified config.
     """
 
-    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22, monitor_memory=False)
+    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22)
     vm.spawn()
     vm.basic_config()
     vm.add_net_iface()
@@ -139,7 +139,7 @@ def test_cpu_features_with_static_template(
     Check the CPU features for a microvm with the specified config.
     """
 
-    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22, monitor_memory=False)
+    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22)
     vm.spawn()
     vm.basic_config(cpu_template=cpu_template)
     vm.add_net_iface()
@@ -160,7 +160,7 @@ def test_cpu_features_with_custom_template(
     Check the CPU features for a microvm with the specified config.
     """
 
-    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22, monitor_memory=False)
+    vm = microvm_factory.build(guest_kernel, rootfs_ubuntu_22)
     vm.spawn()
     vm.basic_config()
     vm.api.cpu_config.put(**custom_cpu_template["template"])

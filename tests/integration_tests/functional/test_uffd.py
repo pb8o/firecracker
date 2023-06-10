@@ -163,7 +163,6 @@ def test_malicious_handler(uvm_plain, snapshot, uffd_handler_paths):
     """
 
     vm = uvm_plain
-    vm.memory_monitor = None
     vm.spawn()
 
     # Spawn page fault handler process.
