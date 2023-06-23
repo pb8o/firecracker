@@ -145,16 +145,15 @@ class Microvm:
     def __init__(
         self,
         resource_path,
-        fc_binary_path=None,
-        jailer_binary_path=None,
-        microvm_id=None,
+        microvm_id,
+        fc_binary_path,
+        jailer_binary_path,
         bin_cloner_path=None,
     ):
         """Set up microVM attributes, paths, and data structures."""
         # pylint: disable=too-many-statements
         # Unique identifier for this machine.
-        if microvm_id is None:
-            microvm_id = str(uuid.uuid4())
+        assert microvm_id is not None
         self._microvm_id = microvm_id
 
         # Compose the paths to the resources specific to this microvm.
@@ -167,13 +166,9 @@ class Microvm:
         self.boot_args = None
 
         # The binaries this microvm will use to start.
-        if fc_binary_path is None:
-            fc_binary_path, _ = build_tools.get_firecracker_binaries()
-        if jailer_binary_path is None:
-            _, jailer_binary_path = build_tools.get_firecracker_binaries()
-        self._fc_binary_path = str(fc_binary_path)
+        self._fc_binary_path = fc_binary_path
         assert fc_binary_path.exists()
-        self._jailer_binary_path = str(jailer_binary_path)
+        self._jailer_binary_path = jailer_binary_path
         assert jailer_binary_path.exists()
 
         # Create the jailer context associated with this microvm.
@@ -795,12 +790,19 @@ class MicroVMFactory:
         self.base_path = Path(base_path)
         self.bin_cloner_path = bin_cloner
         self.vms = []
+        fc_bin, jailer_bin = build_tools.get_firecracker_binaries()
+        self.fc_bin = fc_bin
+        self.jailer_bin = jailer_bin
 
     def build(self, kernel=None, rootfs=None, microvm_id=None, **kwargs):
         """Build a microvm"""
+        fc_bin = kwargs.pop("fc_binary_path", None) or self.fc_bin
+        jailer_bin = kwargs.pop("jailer_binary_path", None) or self.jailer_bin
         vm = Microvm(
             resource_path=self.base_path,
             microvm_id=microvm_id or str(uuid.uuid4()),
+            fc_binary_path=fc_bin,
+            jailer_binary_path=jailer_bin,
             bin_cloner_path=self.bin_cloner_path,
             **kwargs,
         )
