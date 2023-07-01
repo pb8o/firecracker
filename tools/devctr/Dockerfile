@@ -46,6 +46,7 @@ RUN apt-get update \
         # needed for integration tests
         net-tools iproute2 iperf3 socat fdisk \
         openssh-client \
+        gdbserver \
         pkgconf \
         python3 python3-dev python3-pip \
         screen tmux \

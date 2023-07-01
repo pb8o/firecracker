@@ -35,6 +35,7 @@ from framework.artifacts import NetIfaceConfig
 from framework.defs import FC_PID_FILE_NAME, MAX_API_CALL_DURATION_MS
 from framework.http_api import Api
 from framework.jailer import JailerContext
+from framework.microvm_helpers import MicrovmHelpers
 from framework.properties import global_props
 
 LOG = logging.getLogger("microvm")
@@ -163,6 +164,7 @@ class Microvm:
         self.rootfs_file = None
         self.ssh_key = None
         self.initrd_file = None
+        self.boot_args = None
 
         # The binaries this microvm will use to start.
         if fc_binary_path is None:
@@ -209,6 +211,8 @@ class Microvm:
 
         # MMDS content from file
         self.metadata_file = None
+
+        self.help = MicrovmHelpers(self)
 
     def __repr__(self):
         return f"<Microvm id={self.id}>"
@@ -555,9 +559,11 @@ class Microvm:
         )
         self.vcpus_count = vcpu_count
 
+        if boot_args is not None:
+            self.boot_args = boot_args
         boot_source_args = {
             "kernel_image_path": self.create_jailed_resource(self.kernel_file),
-            "boot_args": boot_args,
+            "boot_args": self.boot_args,
         }
 
         if use_initrd and self.initrd_file is not None:
