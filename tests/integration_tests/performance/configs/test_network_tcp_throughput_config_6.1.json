@@ -6,8 +6,8 @@
                     {
                         "baselines": {
                             "cpu_utilization_vcpus_total": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -58,8 +58,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -112,8 +112,8 @@
                                 }
                             },
                             "cpu_utilization_vmm": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -164,8 +164,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -218,8 +218,8 @@
                                 }
                             },
                             "throughput": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -270,8 +270,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -333,8 +333,8 @@
                     {
                         "baselines": {
                             "cpu_utilization_vcpus_total": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -385,8 +385,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -439,8 +439,8 @@
                                 }
                             },
                             "cpu_utilization_vmm": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -491,8 +491,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -545,8 +545,8 @@
                                 }
                             },
                             "throughput": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -597,8 +597,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -656,8 +656,8 @@
                     {
                         "baselines": {
                             "cpu_utilization_vcpus_total": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -708,8 +708,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -762,8 +762,8 @@
                                 }
                             },
                             "cpu_utilization_vmm": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -814,8 +814,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -868,8 +868,8 @@
                                 }
                             },
                             "throughput": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -920,8 +920,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -983,8 +983,8 @@
                     {
                         "baselines": {
                             "cpu_utilization_vcpus_total": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1035,8 +1035,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1089,8 +1089,8 @@
                                 }
                             },
                             "cpu_utilization_vmm": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1141,8 +1141,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1195,8 +1195,8 @@
                                 }
                             },
                             "throughput": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1247,8 +1247,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1310,8 +1310,8 @@
                     {
                         "baselines": {
                             "cpu_utilization_vcpus_total": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1362,8 +1362,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1416,8 +1416,8 @@
                                 }
                             },
                             "cpu_utilization_vmm": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1468,8 +1468,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1522,8 +1522,8 @@
                                 }
                             },
                             "throughput": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1574,8 +1574,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1637,8 +1637,8 @@
                     {
                         "baselines": {
                             "cpu_utilization_vcpus_total": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1689,8 +1689,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1743,8 +1743,8 @@
                                 }
                             },
                             "cpu_utilization_vmm": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1795,8 +1795,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "Avg": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1849,8 +1849,8 @@
                                 }
                             },
                             "throughput": {
-                                "vmlinux-4.14.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-4.14": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
@@ -1901,8 +1901,8 @@
                                         }
                                     }
                                 },
-                                "vmlinux-5.10.bin": {
-                                    "ubuntu-18.04.ext4": {
+                                "linux-5.10": {
+                                    "ubuntu-22.04.squashfs": {
                                         "1vcpu_1024mb.json": {
                                             "total": {
                                                 "tcp-p1024K-wsDEFAULT-g2h": {
