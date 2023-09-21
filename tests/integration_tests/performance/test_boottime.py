@@ -4,6 +4,7 @@
 
 # pylint:disable=redefined-outer-name
 
+import datetime
 import re
 import time
 
@@ -162,7 +163,7 @@ def _configure_and_run_vm(microvm, network=False, initrd=False):
 
 @pytest.mark.parametrize(
     "vcpu_count,mem_size_mib",
-    [(1, 128), (1, 1024), (2, 2048), (4, 4096)],
+    [(1, 128), (1, 1024), (2, 1024), (2, 2048), (4, 4096)],
 )
 def test_boottime(
     microvm_factory, guest_kernel, rootfs, vcpu_count, mem_size_mib, metrics
@@ -191,3 +192,17 @@ def test_boottime(
         vm.start()
         boottime_us = _get_microvm_boottime(vm)
         metrics.put_metric("boot_time", boottime_us, unit="Microseconds")
+
+        fmt = "%Y-%m-%dT%H:%M:%S.%f"
+        m1 = re.search(r"(.+) \[.+\] Building microvm", vm.log_data)
+        m2 = re.search(r"(.+) \[.+\] Starting microvm", vm.log_data)
+        if m1 and m2:
+            t1 = datetime.datetime.strptime(m1.group(1)[:-3], fmt)
+            t2 = datetime.datetime.strptime(m2.group(1)[:-3], fmt)
+            build_time = t2 - t1
+            metrics.put_metric(
+                "build_time", build_time.microseconds, unit="Microseconds"
+            )
+            metrics.put_metric(
+                "guest_boot_time", boottime_us - build_time.microseconds, unit="Microseconds"
+            )

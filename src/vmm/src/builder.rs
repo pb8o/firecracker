@@ -17,7 +17,7 @@ use linux_loader::loader::elf::Elf as Loader;
 #[cfg(target_arch = "aarch64")]
 use linux_loader::loader::pe::PE as Loader;
 use linux_loader::loader::KernelLoader;
-use log::error;
+use log::{error, info};
 use seccompiler::BpfThreadMap;
 use snapshot::Persist;
 use userfaultfd::Uffd;
@@ -369,9 +369,11 @@ pub fn build_and_boot_microvm(
     event_manager: &mut EventManager,
     seccomp_filters: &BpfThreadMap,
 ) -> Result<Arc<Mutex<Vmm>>, StartMicrovmError> {
+    info!("Building microvm");
     let vmm = build_microvm_for_boot(instance_info, vm_resources, event_manager, seccomp_filters)?;
 
     // The vcpus start off in the `Paused` state, let them run.
+    info!("Starting microvm");
     vmm.lock()
         .unwrap()
         .resume_vm()
