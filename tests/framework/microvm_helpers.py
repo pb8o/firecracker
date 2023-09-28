@@ -9,7 +9,7 @@ import subprocess
 from pathlib import Path
 
 
-def docker_apt_install(packages: str | list[str]):
+def docker_apt_install(packages):
     """Install a package in the Docker devctr"""
     apt_lists = Path("/var/lib/apt/lists/")
     if len(list(apt_lists.iterdir())) == 0:

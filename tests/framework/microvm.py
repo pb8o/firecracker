@@ -60,7 +60,8 @@ def hardlink_or_copy(src, dst):
     dst.touch(exist_ok=False)
     if dst.stat().st_dev == src.stat().st_dev:
         dst.unlink()
-        dst.hardlink_to(src)
+        # dst.hardlink_to(src)
+        os.link(src, dst)
     else:
         shutil.copyfile(src, dst)
 
@@ -680,7 +681,7 @@ class Microvm:
         self.api.vm.patch(state="Resumed")
 
     def make_snapshot(
-        self, snapshot_type: SnapshotType | str, target_version: str = None
+        self, snapshot_type: SnapshotType, target_version: str = None
     ):
         """Create a Snapshot object from a microvm.
 

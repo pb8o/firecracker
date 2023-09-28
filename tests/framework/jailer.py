@@ -169,7 +169,8 @@ class JailerContext:
                 if stat_src.st_dev == stat_dst.st_dev:
                     # if they are in the same device, hardlink
                     global_p.unlink(missing_ok=True)
-                    global_p.hardlink_to(file_path)
+                    # global_p.hardlink_to(file_path)
+                    os.link(file_path, global_p)
                 else:
                     # otherwise, copy
                     shutil.copyfile(file_path, global_p)
