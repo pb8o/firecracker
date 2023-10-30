@@ -80,3 +80,6 @@ def test_multi_queue_unsupported(uvm_plain):
             host_dev_name=tapname,
             guest_mac="AA:FC:00:00:00:01",
         )
+
+    # clean TAP device
+    utils.run_cmd(f"{microvm.netns.cmd_prefix()} ip link del name {tapname}")
