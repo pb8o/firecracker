@@ -218,7 +218,7 @@ class NetIfaceConfig:
         )
 
 
-@dataclass(frozen=True, repr=True)
+@dataclass(repr=True)
 class NetNs:
     """Defines a network namespace."""
 
@@ -256,3 +256,18 @@ class NetNs:
             tap = Tap(name, self.id, ip)
             self.taps[name] = tap
         return self.taps[name]
+
+    def is_used(self):
+        """Are any of the TAPs still in use
+
+        Waits until there's no carrier signal.
+        Otherwise trying to reuse the TAP may may return
+            `Resource busy (os error 16)`
+        """
+        for tap in self.taps:
+            _, stdout, _ = utils.run_cmd(
+                f"{self.cmd_prefix()} cat /sys/class/net/{tap}/carrier"
+            )
+            if stdout.strip() != "0":
+                return True
+        return False

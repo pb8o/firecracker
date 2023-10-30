@@ -269,7 +269,7 @@ def test_api_mmds_config(uvm_plain):
         test_microvm.api.mmds_config.put(network_interfaces=["foo"])
 
     # Attach network interface.
-    tap = net_tools.Tap("tap1", test_microvm.netns.id)
+    tap = net_tools.Tap(f"tap1-{test_microvm.id[:6]}", test_microvm.netns.id)
     test_microvm.api.network.put(
         iface_id="1", guest_mac="06:00:00:00:00:01", host_dev_name=tap.name
     )
