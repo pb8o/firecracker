@@ -349,7 +349,7 @@ cmd_help() {
     echo ""
     echo "Available commands:"
     echo ""
-    echo "    build [--debug|--release] [-l|--libc musl|gnu] [-- [<cargo args>]]"
+    echo "    build [--debug|--release] [-l|--libc musl|gnu]"
     echo "        Build the Firecracker binaries."
     echo "        Firecracker is built using the Rust build system (cargo). All arguments after --"
     echo "        will be passed through to cargo."
@@ -681,6 +681,7 @@ cmd_test() {
     ensure_devctr
     ensure_build_dir
     ensure_ci_artifacts
+    cmd_build --release
 
     apply_linux_61_tweaks
 

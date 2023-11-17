@@ -31,7 +31,7 @@ sys.path.append(str(Path(__file__).parent.parent / "tests"))
 
 # pylint:disable=wrong-import-position
 from framework import utils
-from framework.ab_test import check_regression, git_ab_test_with_binaries
+from framework.ab_test import check_regression, git_clone
 from framework.properties import global_props
 from host_tools.metrics import (
     emit_raw_emf,
@@ -152,17 +152,13 @@ def load_data_series(report_path: Path, revision: str = None, *, reemit: bool = 
     return processed_emf
 
 
-def collect_data(firecracker_binary: Path, jailer_binary: Path, test: str):
+def collect_data(binary_dir: Path, test: str):
     """Executes the specified test using the provided firecracker binaries"""
-    # Ensure the binaries are in the same directory. Will always be the case if used with git_ab_test_with_binaries
-    assert jailer_binary.parent == firecracker_binary.parent
-
-    binary_dir = firecracker_binary.parent
     revision = binary_dir.name
 
     print("Collecting samples")
     _, stdout, _ = utils.run_cmd(
-        f"AWS_EMF_ENVIRONMENT=local AWS_EMF_NAMESPACE=local ./tools/test.sh --binary-dir=/firecracker/build/{revision} {test} -m ''"
+        f"AWS_EMF_ENVIRONMENT=local AWS_EMF_NAMESPACE=local ./tools/test.sh --binary-dir={binary_dir} {test} -m ''"
     )
     print(stdout.strip())
 
@@ -221,6 +217,33 @@ def analyze_data(
             metrics_logger.flush()
 
             results[dimension_set, metric] = (result, unit)
+
+    return results
+
+
+def ab_performance_test(
+    a_revision, b_revision, test, p_thresh, strength_abs_thresh, noise_threshold
+):
+    """Does an A/B-test of the specified test across the given revisions"""
+    _, commit_list, _ = utils.run_cmd(
+        f"git --no-pager log --oneline {a_revision}..{b_revision}"
+    )
+    print(
+        f"Performance A/B-test across {a_revision}..{b_revision}. This includes the following commits:"
+    )
+    print(commit_list.strip())
+
+    test = ".." / Path(test)
+    res = []
+    for rev in [a_revision, b_revision]:
+        print(f"Checking out and building {rev}")
+        bin_dir = git_clone(Path("build") / rev, rev)
+        res.append(collect_data(bin_dir, test))
+
+    processed_emf_a, processed_emf_b = res[0], res[1]
+    results = analyze_data(
+        processed_emf_a, processed_emf_b, n_resamples=int(100 / p_thresh)
+    )
 
     # We sort our A/B-Testing results keyed by metric here. The resulting lists of values
     # will be approximately normal distributed, and we will use this property as a means of error correction.
