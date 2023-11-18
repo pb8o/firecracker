@@ -6,11 +6,13 @@
 
 from common import (
     COMMON_PARSER,
+    devtool_test,
     get_changed_files,
+    get_step_defaults,
     group,
-    overlay_dict,
     pipeline_to_json,
     run_all_tests,
+    shared_build,
 )
 
 # Buildkite default job priority is 0. Setting this to 1 prioritizes PRs over
@@ -18,26 +20,33 @@ from common import (
 DEFAULT_PRIORITY = 1
 
 args = COMMON_PARSER.parse_args()
-
-defaults = {
-    "instances": args.instances,
-    "platforms": args.platforms,
-    # buildkite step parameters
-    "timeout_in_minutes": 45,
+per_instance, per_arch = get_step_defaults(
+    args,
+    timeout_in_minutes=20,
     # some non-blocking tests are performance, so make sure they get ag=1 instances
-    "priority": DEFAULT_PRIORITY + 1,
-    "agents": {"ag": 1},
-    "artifacts": ["./test_results/**/*"],
-}
-defaults = overlay_dict(defaults, args.step_param)
+    priority=DEFAULT_PRIORITY + 1,
+    agents={"ag": 1},
+)
 
+steps = []
+binary_dir = args.binary_dir
+if binary_dir is None:
+    build_cmds, binary_dir = shared_build()
+    step_build = group("🏗️ Build", build_cmds, **per_arch)
+    steps += [step_build, "wait"]
 
 optional_grp = group(
     "❓ Optional",
-    "./tools/devtool -y test --performance -c 1-10 -m 0 -- ../tests/integration_tests/ -m 'no_block_pr and not nonci' --log-cli-level=INFO",
-    **defaults,
+    devtool_test(
+        devtool_opts="--no-build --performance -c 1-10 -m 0",
+        pytest_opts="integration_tests/ -m 'no_block_pr and not nonci' --log-cli-level=INFO",
+        binary_dir=binary_dir,
+    ),
+    **per_instance,
 )
 
 changed_files = get_changed_files()
-pipeline = {"steps": [optional_grp]} if run_all_tests(changed_files) else {"steps": []}
+pipeline = (
+    {"steps": steps + [optional_grp]} if run_all_tests(changed_files) else {"steps": []}
+)
 print(pipeline_to_json(pipeline))

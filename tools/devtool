@@ -682,7 +682,6 @@ cmd_test() {
     ensure_build_dir
     ensure_ci_artifacts
     [ $do_build != 0 ] && cmd_build --release
-
     apply_linux_61_tweaks
 
     # If we got to here, we've got all we need to continue.

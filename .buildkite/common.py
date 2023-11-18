@@ -27,6 +27,21 @@ DEFAULT_PLATFORMS = [
 ]
 
 
+def get_step_defaults(args, **kwargs):
+    """Get Buildkite step defaults"""
+    per_instance = {
+        "instances": args.instances,
+        "platforms": args.platforms,
+        "artifacts": ["./test_results/**/*"],
+        **kwargs,
+    }
+    overlay_dict(per_instance, args.step_param)
+    per_arch = per_instance.copy()
+    per_arch["instances"] = ["m6i.metal", "m7g.metal"]
+    per_arch["platforms"] = [("al2", "linux_5.10")]
+    return per_instance, per_arch
+
+
 def overlay_dict(base: dict, update: dict):
     """Overlay a dict over a base one"""
     base = base.copy()
@@ -70,12 +85,12 @@ def group(label, command, instances, platforms, **kwargs):
     if isinstance(command, str):
         commands = [command]
     for instance in instances:
-        for os, kv in platforms:
+        for os_, kv in platforms:
             # fill any templated variables
-            args = {"instance": instance, "os": os, "kv": kv}
+            args = {"instance": instance, "os": os_, "kv": kv}
             step = {
                 "command": [cmd.format(**args) for cmd in commands],
-                "label": f"{label1} {instance} {os} {kv}",
+                "label": f"{label1} {instance} {os_} {kv}",
                 "agents": args,
             }
             step_kwargs = dict_fmt(kwargs, args)
@@ -126,10 +141,18 @@ def devtool_test(devtool_opts=None, pytest_opts=None, binary_dir=None):
     if devtool_opts:
         parts.append(devtool_opts)
     parts.append("--")
-    if binary_dir is not None:
+    if isinstance(binary_dir, str) and binary_dir.endswith(".tar.gz"):
+        cmds.append(f"buildkite-agent artifact download {binary_dir} .")
+        cmds.append(f"tar xzf {binary_dir}")
+    elif isinstance(binary_dir, str):
         cmds.append(f'buildkite-agent artifact download "{binary_dir}/$(uname -m)/*" .')
         cmds.append(f"chmod -v a+x {binary_dir}/**/*")
         parts.append(f"--binary-dir=../{binary_dir}/$(uname -m)")
+    elif isinstance(binary_dir, tuple):
+        tarball, directory = binary_dir
+        cmds.append(f"buildkite-agent artifact download {tarball} .")
+        cmds.append(f"tar xzf {tarball}")
+        parts.append(f"--binary-dir=../{directory}")
     if pytest_opts:
         parts.append(pytest_opts)
     cmds.append(" ".join(parts))
@@ -159,6 +182,36 @@ class DictAction(argparse.Action):
             update = {key: update}
         res = overlay_dict(res, update)
         setattr(namespace, self.dest, res)
+
+
+def revision_a():
+    """Determine if there is a base revision"""
+    if os.environ.get("BUILDKITE_PULL_REQUEST", "false") != "false":
+        return os.environ.get("BUILDKITE_PULL_REQUEST_BASE_BRANCH", "main")
+    return None
+
+
+def shared_build():
+    """Helper function to make it simple to share a compilation artifacts for a
+    whole Buildkite build
+    """
+    build_cmds = ["./tools/devtool -y build --release"]
+
+    # If we are running in a PR context, then also build the base branch in the
+    # expected location, for the A/B tests machinery.
+    rev_a = revision_a()
+    if rev_a is not None:
+        build_cmds += [
+            f"git clone -b {rev_a} build/{rev_a}",
+            f"cd build/{rev_a} && ./tools/devtool -y build --release && cd -",
+        ]
+    build_cmds += [
+        "du -sh build/*",
+        "tar czf build_$(uname -m).tar.gz build",
+        "buildkite-agent artifact upload build_$(uname -m).tar.gz",
+    ]
+    binary_dir = "build_$(uname -m).tar.gz"
+    return build_cmds, binary_dir
 
 
 COMMON_PARSER = argparse.ArgumentParser()

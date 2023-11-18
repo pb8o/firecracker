@@ -3,9 +3,20 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Generate Buildkite performance pipelines dynamically"""
+
+# pylint:disable=invalid-name
+
 import os
 
-from common import COMMON_PARSER, devtool_test, group, overlay_dict, pipeline_to_json
+from common import (
+    COMMON_PARSER,
+    devtool_test,
+    get_step_defaults,
+    group,
+    overlay_dict,
+    pipeline_to_json,
+    shared_build,
+)
 
 # In `devtool_opts`, we restrict both the set of CPUs on which the docker container's threads can run,
 # and its memory node. For the cpuset, we pick a continuous set of CPUs from a single NUMA node
@@ -67,11 +78,11 @@ def build_group(test):
     devtool_opts = test.pop("devtool_opts")
     test_path = test.pop("test_path")
     ab_opts = test.pop("ab_opts", "")
-    devtool_opts += " --performance"
+    devtool_opts += " --performance --no-build"
     pytest_opts = ""
     if REVISION_A:
         devtool_opts += " --ab"
-        pytest_opts = f" {ab_opts} run {REVISION_A} {REVISION_B} --test {test_path}"
+        pytest_opts = f"{ab_opts} run {REVISION_A} {REVISION_B} --test {test_path}"
     else:
         # Passing `-m ''` below instructs pytest to collect tests regardless of their markers (e.g. it will collect both tests marked as nonci, and tests without any markers).
         pytest_opts += f" -m '' {test_path}"
@@ -79,9 +90,6 @@ def build_group(test):
     return group(
         label=test.pop("label"),
         command=devtool_test(devtool_opts, pytest_opts, binary_dir),
-        artifacts=["./test_results/*"],
-        instances=test.pop("instances"),
-        platforms=test.pop("platforms"),
         # and the rest can be command arguments
         **test,
     )
@@ -97,15 +105,32 @@ parser.add_argument(
 )
 
 group_steps = []
-
 args = parser.parse_args()
+per_instance, per_arch = get_step_defaults(args, priority=1)
+
+binary_dir = args.binary_dir
+if REVISION_A:
+    build_cmds = [
+        f"git clone -b {REVISION_A} build/{REVISION_A}",
+        f"cd build/{REVISION_A} && ./tools/devtool -y build --release && cd -",
+        f"git clone -b {REVISION_B} build/{REVISION_B}",
+        f"cd build/{REVISION_B} && ./tools/devtool -y build --release && cd -",
+        "tar czf build_$(uname -m).tar.gz build",
+        "buildkite-agent artifact upload build_$(uname -m).tar.gz",
+    ]
+    binary_dir = "build_$(uname -m).tar.gz"
+elif binary_dir is None:
+    build_cmds, binary_dir = shared_build()
+step_build = group("🏗️ Build", build_cmds, **per_arch)
+group_steps += [step_build, "wait"]
+
 tests = [perf_test[test] for test in args.test or perf_test.keys()]
 for test_data in tests:
     test_data.setdefault("platforms", args.platforms)
     test_data.setdefault("instances", args.instances)
     # use ag=1 instances to make sure no two performance tests are scheduled on the same instance
     test_data.setdefault("agents", {"ag": 1})
-    test_data["binary_dir"] = args.binary_dir
+    test_data["binary_dir"] = binary_dir
     test_data = overlay_dict(test_data, args.step_param)
     test_data["retry"] = {
         "automatic": [
@@ -119,6 +144,7 @@ for test_data in tests:
         # Enable automatic retry and disable manual retries to suppress spurious issues.
         test_data["retry"]["automatic"].append({"exit_status": 1, "limit": 1})
         test_data["retry"]["manual"] = False
+    test_data.update(per_instance)
     group_steps.append(build_group(test_data))
 
 
@@ -136,7 +162,9 @@ def apply_pins(steps):
     """Apply pins"""
     new_steps = []
     for step in steps:
-        if "group" in step:
+        if isinstance(step, str):
+            pass
+        elif "group" in step:
             step["steps"] = apply_pins(step["steps"])
         else:
             agents = step["agents"]
@@ -150,5 +178,4 @@ def apply_pins(steps):
 
 
 group_steps = apply_pins(group_steps)
-
 print(pipeline_to_json({"steps": group_steps}))
