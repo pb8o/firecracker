@@ -67,7 +67,7 @@ functional_grp = group(
     "⚙ Functional and security 🔒",
     devtool_test(
         devtool_opts="--no-build",
-        pytest_opts="-n 8 --dist worksteal integration_tests/{{functional,security}}",
+        pytest_opts="-n 16 --dist worksteal integration_tests/{{functional,security}}",
         binary_dir=binary_dir,
     ),
     **per_instance,
