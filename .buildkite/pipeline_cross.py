@@ -83,7 +83,7 @@ if __name__ == "__main__":
                 f"buildkite-agent artifact download snapshots/{src_instance}_{src_kv}/* .",
                 f"mv -v snapshots/{src_instance}_{src_kv} snapshot_artifacts",
                 *pipeline.devtool_test(
-                    pytest_opts=f"-m nonci {k_val} integration_tests/functional/test_snapshot_restore_cross_kernel.py",
+                    pytest_opts=f"-m nonci -n8 --dist worksteal {k_val} integration_tests/functional/test_snapshot_restore_cross_kernel.py",
                 ),
             ],
             "label": f"🎬 {src_instance} {src_kv} ➡️ {dst_instance} {dst_kv}",
