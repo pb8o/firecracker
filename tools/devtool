@@ -884,6 +884,7 @@ cmd_fmt() {
 
 cmd_mkdocs() {
     cmd_sh "cargo doc --workspace --no-deps --document-private-items"
+    echo $PWD/build/cargo_target/doc
 }
 
 cmd_checkstyle() {
