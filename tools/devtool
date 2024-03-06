@@ -111,12 +111,6 @@ CTR_FC_ROOT_DIR="/firecracker"
 # Full path to the build dir, as bind-mounted in the container.
 CTR_FC_BUILD_DIR="${CTR_FC_ROOT_DIR}/build"
 
-# Full path to the cargo target dir, as bind-mounted in the container.
-CTR_CARGO_TARGET_DIR="$CTR_FC_BUILD_DIR/cargo_target"
-
-# Path to the microVM images cache dir
-MICROVM_IMAGES_DIR="build/img"
-
 # Full path to the public key mapping on the guest
 PUB_KEY_PATH=/root/.ssh/id_rsa.pub
 
@@ -129,6 +123,12 @@ CTR_KERNEL_DIR="${CTR_FC_ROOT_DIR}/.kernel"
 # Global options received by $0
 # These options are not command-specific, so we store them as global vars
 OPT_UNATTENDED=false
+
+# CI artifacts
+ARCH=$(uname -m)
+ARTIFACTS_S3_URL=s3://spec.ccfc.min/firecracker-ci/v1.8/$ARCH
+ARTIFACTS=build/img/$ARCH
+SHARED_ARTIFACTS=/srv/devtool-ci-v1.8-$ARCH
 
 # Get the target prefix to avoid repeated calls to uname -m
 TARGET_PREFIX="$(uname -m)-unknown-linux-"
@@ -297,6 +297,11 @@ run_devctr() {
             docker_args+=("--env") && docker_args+=("$i=${!i}")
         fi
     done
+
+    # if ARTIFACTS are symlinked, bind-mount that directory too
+    if [ -L $ARTIFACTS ]; then
+        docker_args+=(--volume=$(readlink $ARTIFACTS):/firecracker/$ARTIFACTS)
+    fi
 
     # Finally, run the dev container
     # Use 'z' on the --volume parameter for docker to automatically relabel the
@@ -515,21 +520,35 @@ cmd_distclean() {
     fi
 }
 
-ensure_ci_artifacts() {
+function download_ci_artifacts {
     if ! command -v aws >/dev/null; then
       die "AWS CLI not installed, which is required for downloading artifacts for integration tests."
     fi
-
+    local S3_URL=$1
+    local ARTIFACTS=$2
     # Fetch all the artifacts so they are local
     say "Fetching CI artifacts from S3"
-    S3_URL=s3://spec.ccfc.min/firecracker-ci/v1.8/$(uname -m)
-    ARTIFACTS=$MICROVM_IMAGES_DIR/$(uname -m)
-    if [ ! -d "$ARTIFACTS" ]; then
+    aws s3 sync --no-sign-request "$S3_URL" "$ARTIFACTS"
+    # fix permissions
+    find "$ARTIFACTS" -type f -name "*.id_rsa" |xargs chmod -c 400
+    find "$ARTIFACTS/firecracker" -type f |xargs chmod -c 755
+}
+
+ensure_ci_artifacts() {
+    [ -d "$ARTIFACTS" ] && return
+    if [ "$CI" == "true" ]; then
+        say "CI context detected, making a CI artifacts cache"
+        lockfile=/var/tmp/devtool.lock
+        (
+            flock 9 || exit 1
+            sudo install -d --mode=777 $SHARED_ARTIFACTS
+            download_ci_artifacts $ARTIFACTS_S3_URL $SHARED_ARTIFACTS
+            mkdir -pv $(dirname $ARTIFACTS)
+            ln -svfT  $SHARED_ARTIFACTS $ARTIFACTS
+        ) 9>$lockfile
+    else
         mkdir -pv $ARTIFACTS
-        aws s3 sync --no-sign-request "$S3_URL" "$ARTIFACTS"
-        # fix permissions
-        find "$ARTIFACTS" -type f -name "*.id_rsa" |xargs chmod -c 400
-        find "$ARTIFACTS/firecracker" -type f |xargs chmod -c 755
+        download_ci_artifacts $ARTIFACTS_S3_URL $ARTIFACTS
     fi
 }
 
