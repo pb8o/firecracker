@@ -418,8 +418,11 @@ cmd_help() {
     test_debug [-- [<pytest args>]]
         Run tests in a debugging environment
 
-    test_sandbox
-        Run Firecracker in an IPython REPL
+    sandbox
+        Run Firecracker in an IPython REPL (in devctr)
+
+    sandbox_al2023
+        Run Firecracker in an IPython REPL (in AL2023)
 
     mkdocs
         Use 'cargo doc' to generate rustdoc documentation
@@ -868,6 +871,16 @@ cmd_sh() {
 
 cmd_sandbox() {
     cmd_sh "tmux new env PYTEST_ADDOPTS=--pdbcls=IPython.terminal.debugger:TerminalPdb PYTHONPATH=tests IPYTHONDIR=\$PWD/.ipython ipython -i ./tools/sandbox.py $@"
+}
+
+cmd_sandbox_al2023() {
+    sudo yum -y install python3.11-pip python3.11-devel gcc tmux
+    python3.11 -m venv sanbox
+    source sandbox/bin/activate
+    pip install structlog ipython requests "urllib3<2" psutil tenacity filelock requests_unixsocket
+    pip install packaging pytest
+
+    tmux new env PYTEST_ADDOPTS=--pdbcls=IPython.terminal.debugger:TerminalPdb PYTHONPATH=tests IPYTHONDIR=\$PWD/.ipython ipython -i ./tools/sandbox.py $@
 }
 
 cmd_test_debug() {
