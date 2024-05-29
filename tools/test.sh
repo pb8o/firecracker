@@ -36,6 +36,7 @@ cp -ruvf build/img /srv
 
 cd tests
 export PYTEST_ADDOPTS="${PYTEST_ADDOPTS:-} --pdbcls=IPython.terminal.debugger:TerminalPdb"
+set +e
 pytest "$@"
 ret=$?
 
