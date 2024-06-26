@@ -903,7 +903,9 @@ def check_enabled_features(test_microvm, cpu_template):
         "SSE4.2 extensions": "true",
         "x2APIC: extended xAPIC support": "true",
         "POPCNT instruction": "true",
-        "time stamp counter deadline": "true",
+        "time stamp counter deadline": (
+            "true" if global_props.cpu_vendor == "intel" else "false"
+        ),
         "XSAVE/XSTOR states": "true",
         "OS-enabled XSAVE/XSTOR": "true",
         "AVX: advanced vector extensions": "true",
