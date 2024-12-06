@@ -150,6 +150,7 @@ class Snapshot:
             "disks": new_disks,
             "ssh_key": self.ssh_key.name,
             "snapshot_type": self.snapshot_type.value,
+            "meta": self.meta,
         }
         snap_json = dst / "snapshot.json"
         snap_json.write_text(json.dumps(obj))
