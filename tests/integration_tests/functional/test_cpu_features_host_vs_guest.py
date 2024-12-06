@@ -70,6 +70,52 @@ INTEL_HOST_ONLY_FEATS = {
     "xtpr",
 }
 
+AMD_HOST_ONLY_FEATS = {
+    "amd_ppin",
+    "aperfmperf",
+    "bpext",
+    "cat_l3",
+    "cdp_l3",
+    "cpb",
+    "cqm",
+    "cqm_llc",
+    "cqm_mbm_local",
+    "cqm_mbm_total",
+    "cqm_occup_llc",
+    "decodeassists",
+    "extapic",
+    "extd_apicid",
+    "flushbyasid",
+    "hw_pstate",
+    "ibs",
+    "irperf",
+    "lbrv",
+    "mba",
+    "monitor",
+    "mwaitx",
+    "overflow_recov",
+    "pausefilter",
+    "perfctr_llc",
+    "perfctr_nb",
+    "pfthreshold",
+    "rdpru",
+    "rdt_a",
+    "sev",
+    "sev_es",
+    "skinit",
+    "smca",
+    "sme",
+    "succor",
+    "svm_lock",
+    "tce",
+    "tsc_scale",
+    "v_vmsave_vmload",
+    "vgif",
+    "vmcb_clean",
+    "wdt",
+}
+
+
 
 def test_host_vs_guest_cpu_features(uvm_nano):
     """Check CPU features host vs guest"""
@@ -82,52 +128,8 @@ def test_host_vs_guest_cpu_features(uvm_nano):
 
     match CPU_MODEL:
         case CpuModel.AMD_MILAN:
-            host_guest_diff_5_10 = {
-                "amd_ppin",
-                "aperfmperf",
-                "bpext",
-                "cat_l3",
-                "cdp_l3",
-                "cpb",
-                "cqm",
-                "cqm_llc",
-                "cqm_mbm_local",
-                "cqm_mbm_total",
-                "cqm_occup_llc",
-                "decodeassists",
-                "extapic",
-                "extd_apicid",
-                "flushbyasid",
-                "hw_pstate",
-                "ibs",
-                "irperf",
-                "lbrv",
-                "mba",
-                "monitor",
-                "mwaitx",
-                "overflow_recov",
-                "pausefilter",
-                "perfctr_llc",
-                "perfctr_nb",
-                "pfthreshold",
-                "rdpru",
-                "rdt_a",
-                "sev",
-                "sev_es",
-                "skinit",
-                "smca",
-                "sme",
-                "succor",
-                "svm_lock",
-                "tce",
-                "tsc_scale",
-                "v_vmsave_vmload",
-                "vgif",
-                "vmcb_clean",
-                "wdt",
-            }
 
-            host_guest_diff_6_1 = host_guest_diff_5_10 - {
+            host_guest_diff_6_1 = AMD_HOST_ONLY_FEATS - {
                 "lbrv",
                 "pausefilter",
                 "pfthreshold",
@@ -139,10 +141,19 @@ def test_host_vs_guest_cpu_features(uvm_nano):
             } | {"brs", "rapl", "v_spec_ctrl"}
 
             if global_props.host_linux_version_tpl < (6, 1):
-                assert host_feats - guest_feats == host_guest_diff_5_10
+                assert host_feats - guest_feats == AMD_HOST_ONLY_FEATS
             else:
                 assert host_feats - guest_feats == host_guest_diff_6_1
 
+            assert guest_feats - host_feats == {
+                "hypervisor",
+                "tsc_adjust",
+                "tsc_deadline_timer",
+                "tsc_known_freq",
+            }
+
+        case CpuModel.AMD_GENOA:
+            assert host_feats - guest_feats == AMD_HOST_ONLY_FEATS
             assert guest_feats - host_feats == {
                 "hypervisor",
                 "tsc_adjust",
