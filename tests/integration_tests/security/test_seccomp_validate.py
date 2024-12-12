@@ -94,6 +94,9 @@ def test_validate_filter(seccompiler, bin_test_syscall, monkeypatch, tmp_path):
     fc_filter_path = Path(f"../resources/seccomp/{ARCH}-unknown-linux-musl.json")
     fc_filter = json.loads(fc_filter_path.read_text(encoding="ascii"))
 
+    # As of linux v6.12 both x86_64 and aarch64 are below this number
+    syscall_id_max = 512
+
     # cd to a tmp dir because we may generate a bunch of intermediate files
     monkeypatch.chdir(tmp_path)
     # prevent coredumps
@@ -105,14 +108,16 @@ def test_validate_filter(seccompiler, bin_test_syscall, monkeypatch, tmp_path):
     for thread, filter_data in fc_filter.items():
         filter_path = Path(f"{thread}.bpf")
         filter_path.write_bytes(filters[thread])
+        seen_syscalls = set()
         # for each rule, run the helper program and execute a syscall
         for rule in filter_data["filter"]:
             print(filter_path, rule)
             syscall = rule["syscall"]
+            syscall_id = seccomp.resolve_syscall(arch, syscall)
+            seen_syscalls.add(syscall_id)
             # this one cannot be called directly
             if syscall in ["rt_sigreturn"]:
                 continue
-            syscall_id = seccomp.resolve_syscall(arch, syscall)
             cmd = f"{bin_test_syscall} {filter_path} {syscall_id}"
             if "args" not in rule:
                 # syscall should be allowed with any arguments and exit 0
@@ -136,3 +141,12 @@ def test_validate_filter(seccompiler, bin_test_syscall, monkeypatch, tmp_path):
                     # if we call it with unallowed args, it should exit 159
                     # 159 = 128 (abnormal termination) + 31 (SIGSYS)
                     assert outcome.returncode == 159
+
+        print("now we test syscalls we didn't see in the filter")
+        for syscall_id in range(syscall_id_max):
+            if syscall_id in seen_syscalls:
+                continue
+            cmd = f"{bin_test_syscall} {filter_path} {syscall_id}"
+            print(cmd)
+            # and they should all exit 159
+            assert utils.run_cmd(cmd).returncode == 159
