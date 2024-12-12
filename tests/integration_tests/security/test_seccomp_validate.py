@@ -143,10 +143,14 @@ def test_validate_filter(seccompiler, bin_test_syscall, monkeypatch, tmp_path):
                     assert outcome.returncode == 159
 
         print("now we test syscalls we didn't see in the filter")
+        import time
         for syscall_id in range(syscall_id_max):
             if syscall_id in seen_syscalls:
                 continue
             cmd = f"{bin_test_syscall} {filter_path} {syscall_id}"
             print(cmd)
             # and they should all exit 159
+            start = time.perf_counter()
             assert utils.run_cmd(cmd).returncode == 159
+            end = time.perf_counter()
+            print(f"\ttook {end-start:.6f}s")
