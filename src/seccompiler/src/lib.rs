@@ -36,6 +36,8 @@ pub enum CompilationError {
     LibSeccompResolveSyscall,
     /// Cannot add libseccomp syscall rule
     LibSeccompAddRule,
+    /// Cannot set libseccomp syscall priority
+    LibSeccompSetSyscallPriority,
     /// Cannot export libseccomp bpf
     LibSeccompExport,
     /// Cannot create memfd: {0}
@@ -81,6 +83,7 @@ pub fn compile_bpf(
     for (name, filter) in bpf_map_json.0.iter() {
         let default_action = filter.default_action.to_scmp_type();
         let filter_action = filter.filter_action.to_scmp_type();
+        let mut syscall_prio: HashMap<i32, u8> = HashMap::new();
 
         // SAFETY: Safe as all args are correct.
         let bpf_filter = {
@@ -108,6 +111,22 @@ pub fn compile_bpf(
                 }
                 r
             };
+
+            if !syscall_prio.contains_key(&syscall) {
+                // Assign priorities as the syscalls come in the rules. Any
+                // syscall beyond u8::MAX will have priority 0, but that's not a
+                // problem in practice as our filters use fewer syscalls than
+                // that.
+                let prio = u8::MAX - std::cmp::max(syscall_prio.len(), u8::MAX.into()) as u8;
+                // let prio = u8::MAX.saturating_sub(std::cmp::min(syscall_prio.len() + 1, u8::MAX.into()) as u8);
+                syscall_prio.insert(syscall, prio);
+                // SAFETY: Safe as all args are correct.
+                unsafe {
+                    if seccomp_syscall_priority(bpf_filter, syscall, prio) != 0 {
+                        return Err(CompilationError::LibSeccompSetSyscallPriority);
+                    }
+                }
+            }
 
             // TODO remove when we drop deprecated "basic" arg from cli.
             // "basic" bpf means it ignores condition checks.

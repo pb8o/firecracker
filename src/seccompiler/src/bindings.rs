@@ -157,6 +157,22 @@ unsafe extern "C" {
         arg_array: *const scmp_arg_cmp,
     ) -> c_int;
 
+    /// Assign a priority to a syscall
+    ///
+    /// - `ctx`: the filter context
+    /// - `syscall`: the syscall number
+    /// - `priority`: the syscall priority
+    ///
+    /// This function assigns a priority hint to the seccomp filter generator
+    /// such that higher priority syscalls are placed earlier in the seccomp
+    /// filter so that they incur less overhead. Returns zero on success,
+    /// negative values on failure.
+    pub fn seccomp_syscall_priority(
+        ctx: scmp_filter_ctx,
+        syscall: c_int,
+        priority: c_uchar,
+    ) -> c_int;
+
     /// Generate seccomp Berkeley Packet Filter (BPF) code and export it to a file
     ///
     /// - `ctx`: the filter context
