@@ -31,11 +31,11 @@ pub enum CompilationError {
     /// Cannot create libseccomp context
     LibSeccompContext,
     /// Cannot add libseccomp arch
-    LibSeccompArch,
-    /// Cannot add libseccomp syscall
-    LibSeccompSycall,
+    LibSeccompAddArch,
+    /// Cannot resolve libseccomp syscall
+    LibSeccompResolveSyscall,
     /// Cannot add libseccomp syscall rule
-    LibSeccompRule,
+    LibSeccompAddRule,
     /// Cannot export libseccomp bpf
     LibSeccompExport,
     /// Cannot create memfd: {0}
@@ -95,7 +95,7 @@ pub fn compile_bpf(
         unsafe {
             let r = seccomp_arch_add(bpf_filter, arch.to_scmp_type());
             if r != 0 && r != MINUS_EEXIST {
-                return Err(CompilationError::LibSeccompArch);
+                return Err(CompilationError::LibSeccompAddArch);
             }
         }
 
@@ -104,7 +104,7 @@ pub fn compile_bpf(
             let syscall = unsafe {
                 let r = seccomp_syscall_resolve_name(rule.syscall.as_ptr());
                 if r == __NR_SCMP_ERROR {
-                    return Err(CompilationError::LibSeccompSycall);
+                    return Err(CompilationError::LibSeccompResolveSyscall);
                 }
                 r
             };
@@ -115,7 +115,7 @@ pub fn compile_bpf(
                 // SAFETY: Safe as all args are correct.
                 unsafe {
                     if seccomp_rule_add(bpf_filter, filter_action, syscall, 0) != 0 {
-                        return Err(CompilationError::LibSeccompRule);
+                        return Err(CompilationError::LibSeccompAddRule);
                     }
                 }
             } else if let Some(rules) = &rule.args {
@@ -137,14 +137,14 @@ pub fn compile_bpf(
                         comparators.as_ptr(),
                     ) != 0
                     {
-                        return Err(CompilationError::LibSeccompRule);
+                        return Err(CompilationError::LibSeccompAddRule);
                     }
                 }
             } else {
                 // SAFETY: Safe as all args are correct.
                 unsafe {
                     if seccomp_rule_add(bpf_filter, filter_action, syscall, 0) != 0 {
-                        return Err(CompilationError::LibSeccompRule);
+                        return Err(CompilationError::LibSeccompAddRule);
                     }
                 }
             }
